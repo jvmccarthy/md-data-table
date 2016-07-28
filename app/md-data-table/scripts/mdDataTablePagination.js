@@ -18,15 +18,20 @@ function mdDataTablePagination($q) {
       
       // the pagination directive is outside the table directive so we need
       // to locate the controller
-      var findTable = function(element, callback) {
+      var findTable = function(element, callback) { 
         while(element.localName !== 'md-data-table-container' && element.previousElementSibling) {
           element = element.previousElementSibling;
         }
-        callback(angular.element(element.firstElementChild));
+        // Allow for intermediate elements between md-data-table-container and md-data-table
+        element = element.querySelector('[md-data-table]');
+        callback(angular.element(element));
       };
       
       var setTrigger = function(table) {
-        var tableCtrl = table.controller('mdDataTable');
+        var tableCtrl;
+        if(table) {
+          tableCtrl = table.controller('mdDataTable');
+        } 
         
         if(!tableCtrl) {
           return console.warn('Table Pagination: Could not locate your table directive, your ' + attrs.mdTrigger + ' function will not work.');
